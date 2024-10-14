@@ -1,31 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-/*
-void createButtonGrid(QGridLayout *gridLayout, int X, MainWindow *parent) {
-    // Clear any existing items from the grid layout
-    QLayoutItem* item;
-    while ((item = gridLayout->takeAt(0)) != nullptr) {
-        delete item->widget();  // Delete the widget from the layout
-        delete item;            // Delete the layout item itself
-    }
-
-    // Loop to create buttons and add them to the grid
-    for (int row = 0; row < X; ++row) {
-        for (int col = 0; col < X; ++col) {
-            // Create a new button with a label indicating its position
-            QPushButton *button = new QPushButton();
-            QObject::connect(button, &QPushButton::clicked, parent, [button, row, col,parent]() {
-                parent->handleButtonClick(row,col);
-            });
-
-            // Add the button to the grid layout at position (row, col)
-            gridLayout->addWidget(button, row, col);
-        }
-    }
-}
-*/
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
