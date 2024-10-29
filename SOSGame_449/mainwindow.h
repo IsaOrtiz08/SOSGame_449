@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include "game_logic.h"
 #include <QString>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,19 +21,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-
 private slots:
     void handleCellClick(int row, int col);
     void startGame();
-    //void updateBoard();
     void updateScore();
-    //void getLetter();
+    void endGame(SOS::GameLogic* gameLogic);
+    void handlePlayerMove(SOS::GameLogic* gameLogic);
 private:
+    SOS::GameLogic* gameLogic;
     Ui::MainWindow *ui;
-    SOS::GameLogic gameLogic;
     std::vector<std::vector<QPushButton*>> buttons;
     int boardSize;
     void createBoard(int size);
+    void nextTurn();
 };
 #endif // MAINWINDOW_H
