@@ -1,3 +1,4 @@
+#pragma once
 #ifndef GAME_LOGIC_H
 #define GAME_LOGIC_H
 #include <string>
@@ -7,18 +8,22 @@
 namespace SOS {
 
 class GameLogic {
-private:
+protected:
     int board_size;
-    std::vector<std::vector<std::string>> Board;
-    int player1 = 1, player2 = 2;
+    int player1 = 1, player2 = 2; // player 2 in general is the computer
     int currentPlayer = 1;
     const std::string s = "S";
     const std::string o = "O";
     std::string p1curr_letter = "";
     std::string p2curr_letter = "";
     int player1Score = 0, player2Score = 0;
-    int gameMode = 0; //gamemode 0: simple, gamemode 1: general
+    int lastMoveRow;
+    int lastMoveCol;
 public:
+    std::vector<std::pair<int, int>> completedSOSPositions;
+    int gameMode; //gamemode 0: simple, gamemode 1: general
+    GameLogic(int size, int mode);
+    std::vector<std::vector<std::string>> Board;
     bool GameDone = false;
     int getPlayer1Score();
     int getPlayer2Score();
@@ -27,17 +32,39 @@ public:
     void SetP1CurrLetter(std::string letter);
     void SetP2CurrLetter(std::string letter);
     int getCurrentPlayer();
-    void GetBoardSize(int input);
+    bool GetBoardSize(int input);
     std::vector<std::vector<std::string>> CreateBoard();
     bool IsBoardFull();
-    void ChooseGameMode(int input);
     void SetNextPlayer();
     int CheckForSOS(int row, int col);
-    // Make a move on the board
     bool makeMove(int row, int col, const std::string& letter);
-    bool IsGameEnded_Simple();
-    bool IsGameEnded_General();
+    virtual bool IsGameEnded() = 0;
+    const std::vector<std::pair<int, int>>& getCompletedSOSPositions();
+    void clearCompletedSOS();
 };
+
+class SimpleGameLogic : public GameLogic {
+public:
+    SimpleGameLogic(int size) : GameLogic(size, 0) {}
+
+    // Override specific methods if needed
+    bool IsGameEnded();
+};
+
+class GeneralGameLogic : public GameLogic {
+public:
+    GeneralGameLogic(int size) : GameLogic(size, 1) {}
+
+    // Override specific methods for general mode
+    bool makeMoveComputer();
+    bool IsGameEnded();
+    int getLastMoveCol() const;
+    int getLastMoveRow() const;
+    std::string getComputerLetter() const;
+private:
+    int computer_row, computer_column;
+};
+
 
 }
 #endif // GAME_LOGIC_H
