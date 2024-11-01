@@ -1,31 +1,108 @@
-#include "pch.h"
+#include "gtest/gtest.h"
 #include "../SOSGame_449/game_logic.h"
 
 using namespace SOS;
+// Board Size Tests
+TEST(GameLogicTest, BoardSizeLessThanThree) {
+    SOS::SimpleGameLogic gameLogic(2); 
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected GameDone to be true for board sizes less than 3";
+}
 
-class GameLogicTest : public ::testing::Test {
-protected:
-    GameLogic game; // Instance of GameLogic to be used in tests
+TEST(GameLogicTest, BoardSizeGreaterThanTwenty) {
+    SOS::SimpleGameLogic gameLogic(20);
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected GameDone to be true for board sizes greater than 20";
+}
 
-    // Reset game state before each test
-    void SetUp() override {
-        game.GameDone = false;
+TEST(GameLogicTest, AcceptableBoardSize) {
+    SOS::SimpleGameLogic gameLogic(10);
+    EXPECT_FALSE(gameLogic.GameDone) << "Expected GameDone to be false for acceptable board size";
+}
+
+
+TEST(GameLogicTest, NullBoardSize) {
+    SOS::SimpleGameLogic gameLogic(NULL);
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected GameDone to be true as it was never able to successfully begin";
+}
+
+
+// New Game tests
+TEST(GameLogicTest, NewGameSimple) {
+    SOS::SimpleGameLogic gameLogic(4);
+    EXPECT_TRUE(gameLogic.gameMode == 0) << "Expected GameMode to be Simple when creating a simple game";
+}
+
+TEST(GameLogicTest, NewGameGeneral) {
+    SOS::GeneralGameLogic gameLogic(4);
+    EXPECT_TRUE(gameLogic.gameMode == 1) << "Expected GameMode to be General when creating a general game";
+}
+
+// Simple Game Movement
+TEST(GameLogicTest, Simple_Place_S) {
+    SOS::SimpleGameLogic gameLogic(4);
+    gameLogic.makeMove(0, 2, "S");
+    EXPECT_TRUE(gameLogic.Board[0][2] == "S") << "Expected position to contain S";
+}
+
+TEST(GameLogicTest, Simple_Place_O) {
+    SOS::SimpleGameLogic gameLogic(4);
+    gameLogic.makeMove(0, 2, "O");
+    EXPECT_TRUE(gameLogic.Board[0][2] == "O") << "Expected position to contain O";
+}
+
+TEST(GameLogicTest, InvalidPlacement) {
+    SOS::SimpleGameLogic gameLogic(4);    
+    EXPECT_FALSE(gameLogic.makeMove(0, 6, "S")) << "Expected makeMove to return False for invalid move";
+}
+
+// Simple Game Winning Tests
+TEST(GameLogicTest, SimpleGameEnd_P1) {
+    SOS::SimpleGameLogic gameLogic(3);
+    gameLogic.makeMove(0, 0, "S"); // player 1 move #1
+    gameLogic.makeMove(1, 1, "S"); // player 2 move (not important)
+    gameLogic.makeMove(0, 1, "O"); //player 1 move #2
+    gameLogic.makeMove(1, 0, "S");
+    gameLogic.makeMove(0, 2, "S");// player 1 winning move #3
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected true for simple game to end";
+}
+
+TEST(GameLogicTest, SimpleGameEnd_P2) {
+    SOS::SimpleGameLogic gameLogic(3);
+    gameLogic.makeMove(1, 1, "S"); // player 1 move (not important)
+    gameLogic.makeMove(0, 0, "S"); // player 2 move #1
+    gameLogic.makeMove(1, 0, "S"); 
+    gameLogic.makeMove(0, 1, "O");// player 2 move #2
+    gameLogic.makeMove(1, 2, "S");
+    gameLogic.makeMove(0, 2, "S");// player 1 winning move #3
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected true for simple game to end";
+}
+
+//General Game Movement
+TEST(GameLogicTest, General_Place_S) {
+    SOS::GeneralGameLogic gameLogic(4);
+    gameLogic.makeMove(0, 2, "S");
+    EXPECT_TRUE(gameLogic.Board[0][2] == "S") << "Expected position to contain S";
+}
+
+TEST(GameLogicTest, General_Place_O) {
+    SOS::GeneralGameLogic gameLogic(4);
+    gameLogic.makeMove(0, 2, "O");
+    EXPECT_TRUE(gameLogic.Board[0][2] == "O") << "Expected position to contain O";
+}
+
+TEST(GameLogicTest, ComputerMove) {
+    SOS::GeneralGameLogic gameLogic(4);
+    gameLogic.SetNextPlayer();
+    gameLogic.makeMoveComputer();
+    EXPECT_TRUE(gameLogic.Board[gameLogic.getLastMoveRow()][gameLogic.getLastMoveCol()] == gameLogic.getComputerLetter()) << "Expected computer move to match on Board";
+}
+// General Game winning tests
+
+TEST(GameLogicTest, GenearlGameEnd) {
+    SOS::GeneralGameLogic gameLogic(3);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            gameLogic.makeMove(i, j, "S");
+        }
     }
-};
-
-TEST_F(GameLogicTest, TestBoardSizeGreaterThan3x3) {
-    // Given
-    int inputBoardSize = 4; // Input board size greater than 3x3
-
-    // When
-    game.GetBoardSize(inputBoardSize);  // Set the board size
-    auto board = game.CreateBoard();    // Create the board with the given size
-
-    // Then
-    // Check that the board has been created with the correct size
-    EXPECT_EQ(board.size(), inputBoardSize);
-    EXPECT_EQ(board[0].size(), inputBoardSize);
-
-    // Check that the game has started
-    EXPECT_FALSE(game.GameDone);  // Game should not be done when it starts
+    EXPECT_TRUE(gameLogic.GameDone) << "Expected True for game board being full";
 }
