@@ -106,3 +106,27 @@ TEST(GameLogicTest, GeneralGameEnd) {
     }
     EXPECT_TRUE(gameLogic.GameDone) << "Expected True for game board being full";
 }
+
+TEST(GameLogicTest, StartSimpleGameMode) {
+    // Simple game mode is typically represented by mode 1
+    int board_size = 5;
+    int game_mode = 1; // Assuming 1 means Simple Game Mode
+
+    SOS::SimpleGameLogic game(board_size);
+
+    EXPECT_EQ(game.gameMode, 1); // Assuming a getter for game mode is available
+    EXPECT_FALSE(game.IsGameEnded()); // Game should be started, not done
+}
+
+// Test for AC 2.2: Choosing General Game
+TEST(GameLogicTest, StartGeneralGameMode) {
+    // General game mode is typically represented by mode 2
+    int board_size = 5;
+    int game_mode = 2; // Assuming 2 means General Game Mode
+
+    SOS::GeneralGameLogic game(board_size);
+
+    EXPECT_EQ(game.gameMode, 2); // Assuming a getter for game mode is available
+    EXPECT_FALSE(game.IsGameEnded()); // Game should be started, not done
+}
+
