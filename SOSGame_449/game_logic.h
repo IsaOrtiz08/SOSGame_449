@@ -53,7 +53,6 @@ class GeneralGameLogic : public GameLogic {
 public:
     GeneralGameLogic(int size) : GameLogic(size, 1) {}
 
-    // Override specific methods for general mode
     bool makeMoveComputer();
     bool IsGameEnded();
     int getLastMoveCol() const;
