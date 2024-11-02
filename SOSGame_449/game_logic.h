@@ -16,9 +16,7 @@ protected:
     const std::string o = "O";
     std::string p1curr_letter = "";
     std::string p2curr_letter = "";
-    int player1Score = 0, player2Score = 0;
-    int lastMoveRow;
-    int lastMoveCol;
+    int player1Score = 0, player2Score = 0;   
 public:
     std::vector<std::pair<int, int>> completedSOSPositions;
     int gameMode; //gamemode 0: simple, gamemode 1: general
@@ -63,6 +61,8 @@ public:
     std::string getComputerLetter() const;
 private:
     int computer_row, computer_column;
+     int lastMoveRow;
+    int lastMoveCol;
 };
 
 
